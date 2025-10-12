@@ -1,7 +1,7 @@
 코드입니다 ⬇️
 
 
-       #include <stdio.h>
+      #include <stdio.h>
        #include <string.h>
        #include <stdlib.h>
        
@@ -49,7 +49,7 @@
        
        void lb(){
            for(int i=0;i<BCOUNT;i++)
-               printf("%d. 《%s》 상태: %s\n",i+1,b[i].bn,b[i].bs);
+               printf("%2d. 《%-20s》 상태: %s\n", i+1, b[i].bn, b[i].bs);
        }
        
        void bb(){
@@ -106,5 +106,6 @@
                getchar(); getchar();
            }
        }
+
 
 
