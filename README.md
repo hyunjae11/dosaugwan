@@ -3,157 +3,103 @@
 
     #include <stdio.h>
     #include <string.h>
+    #include <stdlib.h>
     
-    #define MAX_BOOKS 5
+    #define BCOUNT 25
     
-    struct Book {
-        char title[50];
-        int iB;
+    typedef enum { N,O,S } Status;
+    
+    typedef struct {
+        char bn[50];
+        char bs[10];
+    } Book;
+    
+    typedef struct {
+        char mn[50];
+        Status ms;
+        int mo;
+        char c[10];
+    } M;
+    
+    Book b[BCOUNT] = {
+        {"1984","GMR"},{"노인과 바다","GMR"},{"죄와 벌","GMR"},{"동물농장","GMR"},
+        {"위대한 개츠비","GMR"},{"82년생 김지영","GMR"},{"채식주의자","GMR"},{"소년이 온다","GMR"},
+        {"마지막 팬클럽","GMR"},{"7년의 밤","GMR"},{"연금술사","GMR"},{"내 이름은 빨강","GMR"},
+        {"시간을 달리는 소녀","GMR"},{"클라우드 아틀라스","GMR"},{"모모","GMR"},{"셜록 홈즈 전집","GMR"},
+        {"해리 포터","GMR"},{"나미야 잡화점의 기적","GMR"},{"기억 전달자","GMR"},{"더 마션","GMR"},
+        {"유령생활기록부","GMR"},{"눈먼자들의 도시","GMR"},{"워렌버핏의 돈 관리법","GMR"},{"국어사전","GMR"},
+        {"이스터Egg","GMR"}
     };
     
-    struct User {
-        char name[30];
-        int hC;
-    };
+    M m;
     
-    void sM();
-    void bB(struct Book books[], int n);
-    void rB(struct Book books[], int n);
-    void sB(struct Book books[], int n);
-    void rcmB();
-    void mC(struct User *u);
-    
-    int main() {
-        struct Book books[MAX_BOOKS] = {
-            {"해리포터와 마법사의 돌", 0},
-            {"데미안", 0},
-            {"죄와 벌", 0},
-            {"어린 왕자", 0},
-            {"토지", 0}
-        };
-
-    struct User u = {"", 0};
-    int ch;
-
-    while (1) {
-        sM();
-        printf("번호 선택: ");
-        scanf("%d", &ch);
-        getchar();
-
-        switch (ch) {
-            case 1:
-                bB(books, MAX_BOOKS);
-                break;
-            case 2:
-                rB(books, MAX_BOOKS);
-                break;
-            case 3:
-                sB(books, MAX_BOOKS);
-                break;
-            case 4:
-                rcmB();
-                break;
-            case 5:
-                mC(&u);
-                break;
-            case 0:
-                printf("프로그램을 종료합니다.\n");
-                return 0;
-            default:
-                printf("잘못된 입력입니다.\n");
-        }
-    }
+    void im(){
+        strcpy(m.mn,"SNB");
+        m.ms=N; m.mo=0;
+        sprintf(m.c,"%d",rand()%10000);
     }
     
-    void sM() {
-        printf("\n=== 도서관 프로그램 ===\n");
-        printf("1. 대출\n");
-        printf("2. 반납\n");
-        printf("3. 책 목록\n");
-        printf("4. 추천 도서\n");
-        printf("5. 도서증\n");
-        printf("0. 종료\n");
+    void sc(){
+        printf("====== 도서증 ======\n");
+        printf("이름: %s\n",m.mn);
+        printf("회원상태: %s\n",m.ms==N?"정상":m.ms==O?"연체":"정지");
+        printf("코드: %s\n",m.c);
+        printf("==================\n");
     }
     
-    void bB(struct Book books[], int n) {
-        int i;
-        printf("\n--- 대출 가능한 책 목록 ---\n");
-        for (i = 0; i < n; i++) {
-            if (!books[i].iB)
-                printf("%d. %s\n", i + 1, books[i].title);
-        }
-
-    printf("대출할 책 번호 입력: ");
-    scanf("%d", &i);
-
-    if (i < 1 || i > n) {
-        printf("잘못된 번호입니다.\n");
-        return;
-    }
-
-    if (books[i - 1].iB) {
-        printf("이미 대출 중인 책입니다.\n");
-    } else {
-        books[i - 1].iB = 1;
-        printf("'%s' 책을 대출했습니다. 반납 기간은 1주일입니다.\n", books[i - 1].title);
-    }
+    void lb(){
+        for(int i=0;i<BCOUNT;i++)
+            printf("%d. 《%s》 상태: %s\n",i+1,b[i].bn,b[i].bs);
     }
     
-    void rB(struct Book books[], int n) {
-        int i;
-        printf("\n--- 반납 가능한 책 목록 ---\n");
-        for (i = 0; i < n; i++) {
-            if (books[i].iB)
-                printf("%d. %s\n", i + 1, books[i].title);
-        }
-
-    printf("반납할 책 번호 입력: ");
-    scanf("%d", &i);
-
-    if (i < 1 || i > n) {
-        printf("잘못된 번호입니다.\n");
-        return;
-    }
-
-    if (!books[i - 1].iB) {
-        printf("이 책은 대출되지 않았습니다.\n");
-    } else {
-        books[i - 1].iB = 0;
-        printf("'%s' 책을 반납했습니다.\n", books[i - 1].title);
-    }
+    void bb(){
+        if(m.ms==S){printf("회원 상태가 정지되어 대출 불가\n"); return;}
+        int n;
+        lb();
+        printf("대출할 책 번호 입력: ");
+        scanf("%d",&n); n--;
+        if(n<0 || n>=BCOUNT){printf("잘못된 번호\n"); return;}
+        if(strcmp(b[n].bs,"대출중")==0){printf("이미 대출중\n"); return;}
+        strcpy(b[n].bs,"대출중");
+        printf("《%s》 대출 완료\n",b[n].bn);
     }
     
-    void sB(struct Book books[], int n) {
-        printf("\n--- 전체 책 목록 ---\n");
-        for (int i = 0; i < n; i++) {
-            printf("%d. %s (%s)\n", i + 1, books[i].title,
-                   books[i].iB ? "대출 중" : "대출 가능");
-        }
+    void rb(){
+        int f=0;
+        for(int i=0;i<BCOUNT;i++)
+            if(strcmp(b[i].bs,"대출중")==0) f=1;
+        if(!f){printf("대출중인 책 없음\n"); return;}
+        int n;
+        lb();
+        printf("반납할 책 번호 입력: ");
+        scanf("%d",&n); n--;
+        if(n<0 || n>=BCOUNT || strcmp(b[n].bs,"대출중")!=0){printf("잘못된 입력\n"); return;}
+        m.mo++;
+        if(m.mo>=3) m.ms=S; else m.ms=O;
+        strcpy(b[n].bs,"GMR");
+        printf("《%s》 반납 완료\n",b[n].bn);
     }
     
-    void rcmB() {
-        printf("\n오늘의 추천 도서: 『1984』 - 조지 오웰\n");
+    void rbk(){
+        int i=rand()%BCOUNT;
+        printf("추천 도서: 《%s》\n",b[i].bn);
     }
     
-    void mC(struct User *u) {
-        if (u->hC == 0) {
-            printf("\n도서증이 없습니다. 새로 만드시겠습니까? (y/n): ");
-            char c;
-            scanf(" %c", &c);
-            getchar();
-            if (c == 'y' || c == 'Y') {
-                printf("이름 입력: ");
-                fgets(u->name, sizeof(u->name), stdin);
-                u->name[strcspn(u->name, "\n")] = '\0';
-                u->hC = 1;
-                printf("%s님의 도서증이 발급되었습니다.\n", u->name);
-            } else {
-                printf("도서증 발급이 취소되었습니다.\n");
+    int main(){
+        srand(1);
+        im();
+        int c;
+        while(1){
+            printf("\n1. 대출 2. 반납 3. 책 목록 4. 추천 5. 도서증 6. 종료\n선택: ");
+            scanf("%d",&c);
+            switch(c){
+                case 1: bb(); break;
+                case 2: rb(); break;
+                case 3: lb(); break;
+                case 4: rbk(); break;
+                case 5: sc(); break;
+                case 6: exit(0);
+                default: printf("잘못된 선택\n");
             }
-        } else {
-            printf("\n--- 도서증 정보 ---\n");
-            printf("이름: %s\n", u->name);
-            printf("회원 상태: 정상\n");
         }
     }
