@@ -1,6 +1,12 @@
 코드입니다 ⬇️
 
 
+아래있는 책중 21권은 ChatGpt가 정렬한 책들입니다.
+
+
+코드에 이스터에그가 있습니다.
+찾아보시는걸 추천드리며 이스터에그로 나온 결과는 제작자의 취향임을 알려드립니다
+
      #include <stdio.h>
       #include <string.h>
       #include <stdlib.h>
@@ -22,7 +28,12 @@
           {"SNB","대출 가능"}
       };
       
-      time_t borrow_times[BCOUNT]; // 대출 시간 기록
+    
+
+      
+      
+      
+      time_t borrow_times[BCOUNT];
       
       char member_name[50];
       Status member_status;
@@ -172,3 +183,4 @@
               getchar(); getchar();
           }
       }
+Made by hyunjae11
