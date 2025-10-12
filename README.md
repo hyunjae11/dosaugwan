@@ -1,7 +1,7 @@
 코드입니다 ⬇️
 
 
-    #include <stdio.h>
+       #include <stdio.h>
     #include <string.h>
     #include <stdlib.h>
     
@@ -90,7 +90,8 @@
         im();
         int c;
         while(1){
-            printf("\n1. 대출 2. 반납 3. 책 목록 4. 추천 5. 도서증 6. 종료\n선택: ");
+            system("cls");
+            printf("\n1. 대출 \n2. 반납 \n3. 책 목록 \n4. 추천 \n5. 도서증 \n6. 종료\n선택: ");
             scanf("%d",&c);
             switch(c){
                 case 1: bb(); break;
@@ -101,5 +102,8 @@
                 case 6: exit(0);
                 default: printf("잘못된 선택\n");
             }
+            printf("\n계속하려면 엔터를 누르세요...");
+            getchar(); getchar();
         }
     }
+
