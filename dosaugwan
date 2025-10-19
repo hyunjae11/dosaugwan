@@ -2,292 +2,226 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <windows.h>
 #define BCOUNT 25
 #define MAX_INPUT 100
 #define BORROW_TIME_LIMIT 180
+
 typedef enum { N,O,S } Status;
+
 char books[BCOUNT][2][50] = {
-{"1984","대출 가능"},{"노인과 바다","대출 가능"},{"죄와 벌","대출 가능"},{"동물농장","대출 가능"},
-{"위대한 개츠비","대출 가능"},{"82년생 김지영","대출 가능"},{"채식주의자","대출 가능"},{"소년이 온다","대출 가능"},
-{"마지막 팬클럽","대출 가능"},{"7년의 밤","대출 가능"},{"연금술사","대출 가능"},{"내 이름은 빨강","대출 가능"},
-{"시간을 달리는 소녀","대출 가능"},{"클라우드 아틀라스","대출 가능"},{"모모","대출 가능"},{"셜록 홈즈 전집","대출 가능"},
-{"해리 포터","대출 가능"},{"나미야 잡화점의 기적","대출 가능"},{"기억 전달자","대출 가능"},{"더 마션","대출 가능"},
-{"유령생활기록부","대출 가능"},{"눈먼자들의 도시","대출 가능"},{"워렌버핏의 돈 관리법","대출 가능"},{"국어사전","대출 가능"},
+{"1984","대출 가능"},
+{"노인과 바다","대출 가능"},
+{"죄와 벌","대출 가능"},
+{"동물농장","대출 가능"},
+{"위대한 개츠비","대출 가능"},
+{"82년생 김지영","대출 가능"},
+{"채식주의자","대출 가능"},
+{"소년이 온다","대출 가능"},
+{"마지막 팬클럽","대출 가능"},
+{"7년의 밤","대출 가능"},
+{"연금술사","대출 가능"},
+{"내 이름은 빨강","대출 가능"},
+{"시간을 달리는 소녀","대출 가능"},
+{"클라우드 아틀라스","대출 가능"},
+{"모모","대출 가능"},
+{"셜록 홈즈 전집","대출 가능"},
+{"해리 포터","대출 가능"},
+{"나미야 잡화점의 기적","대출 가능"},
+{"기억 전달자","대출 가능"},
+{"더 마션","대출 가능"},
+{"유령생활기록부","대출 가능"},
+{"눈먼자들의 도시","대출 가능"},
+{"워렌버핏의 돈 관리법","대출 가능"},
+{"국어사전","대출 가능"},
 {"SNB","대출 가능"}
 };
-
-
-
-
 
 time_t borrow_times[BCOUNT];
 char member_name[50];
 Status member_status;
 int warning;
-
-
-
-
-
-
-
-
-
-
-
 char member_code[10];
+
 void init_member(){
-printf("회원 이름 입력: ");
-fgets(member_name,sizeof(member_name),stdin);
-member_name[strcspn(member_name,"\n")] = 0;
-if(strlen(member_name)==0) strcpy(member_name,"SNB");
-member_status = N;
-warning = 0;
-sprintf(member_code,"%d",rand()%10000);
+    printf("회원 이름 입력: ");
+    fgets(member_name,sizeof(member_name),stdin);
+    member_name[strcspn(member_name,"\n")] = 0;
+    if(strlen(member_name)==0) strcpy(member_name,"SNB");
+    member_status = N;
+    warning = 0;
+    sprintf(member_code,"%d",rand()%10000);
 }
-
-
-
-
-
-
-
-
-
-
 
 void show_card(){
-printf("====== 도서증 ======\n");
-printf("이름: %s\n",member_name);
-printf("회원상태: %s\n", member_status==N?"정상":member_status==O?"연체":"정지");
-printf("경고: %d\n", warning);
-printf("코드: %s\n", member_code);
-printf("==================\n");
+    printf("====== 도서증 ======\n");
+    printf("이름: %s\n",member_name);
+    printf("회원상태: %s\n", member_status==N?"정상":member_status==O?"연체":"정지");
+    printf("경고: %d\n", warning);
+    printf("코드: %s\n", member_code);
+    printf("==================\n");
 }
-
-
-
-
-
-
-
-
-
-
 
 void list_books(){
-int col=30;
-for(int i=0;i<BCOUNT;i++){
-printf("%2d. 《%s》",i+1,books[i][0]);
-int len=3+strlen(books[i][0]);
-int spaces=col-len;
-if(spaces<1) spaces=1;
-for(int j=0;j<spaces;j++) printf(" ");
-printf("상태: %s\n",books[i][1]);
+    int col=30;
+    for(int i=0;i<BCOUNT;i++){
+        printf("%2d. 《%s》",i+1,books[i][0]);
+        int len=3+strlen(books[i][0]);
+        int spaces=col-len;
+        if(spaces<1) spaces=1;
+        for(int j=0;j<spaces;j++) printf(" ");
+        printf("상태: %s\n",books[i][1]);
+    }
 }
-}
-
-
-
-
-
-
-
-
 
 void check_warnings(){
-time_t now=time(NULL);
-for(int i=0;i<BCOUNT;i++){
-if(strcmp(books[i][1],"대출중")==0 && i!=24){
-if(difftime(now,borrow_times[i])>=BORROW_TIME_LIMIT){
-warning++;
-strcpy(books[i][1],"대출 가능");
-printf("《%s》 반납 시간이 지났습니다! 경고 %d\n",books[i][0],warning);
-if(warning>=3) member_status=S;
+    time_t now=time(NULL);
+    for(int i=0;i<BCOUNT;i++){
+        if(strcmp(books[i][1],"대출중")==0 && i!=24){
+            if(difftime(now,borrow_times[i])>=BORROW_TIME_LIMIT){
+                warning++;
+                strcpy(books[i][1],"대출 가능");
+                printf("《%s》 반납 시간이 지났습니다! 경고 %d\n",books[i][0],warning);
+                if(warning>=3) member_status=S;
+            }
+        }
+    }
 }
-}
-}
-}
-
-
-
-
-
-
-
-
-
-
-
 
 void process_books(char input[],int is_borrow){
-int n;
-char num[10];
-int idx=0;
-if(strcmp(input,"0")==0 && !is_borrow){
-for(int i=0;i<BCOUNT;i++)
-if(strcmp(books[i][1],"대출중")==0) strcpy(books[i][1],"대출 가능");
-printf("모든 책 반납 완료\n");
-return;
+    int n;
+    char num[10];
+    int idx=0;
+    if(strcmp(input,"0")==0 && !is_borrow){
+        for(int i=0;i<BCOUNT;i++)
+            if(strcmp(books[i][1],"대출중")==0) strcpy(books[i][1],"대출 가능");
+        printf("모든 책 반납 완료\n");
+        return;
+    }
+
+    for(int i=0;i<=strlen(input);i++){
+        if(input[i]==','||input[i]=='\0'){
+            num[idx]='\0';
+            n=atoi(num)-1;
+            if(n<0||n>=BCOUNT) printf("잘못된 번호: %s\n",num);
+            else if(is_borrow){
+                if(strcmp(books[n][1],"대출중")==0)
+                    printf("이미 대출중: 《%s》\n",books[n][0]);
+                else{
+                    strcpy(books[n][1],"대출중");
+                    borrow_times[n]=time(NULL);
+                    printf("《%s》 대출 완료\n",books[n][0]);
+                    if(n==24) strcpy(member_name,"SNB");
+                }
+            } else {
+                if(strcmp(books[n][1],"대출중")!=0)
+                    printf("대출중이 아님: 《%s》\n",books[n][0]);
+                else{
+                    strcpy(books[n][1],"대출 가능");
+                    printf("《%s》 반납 완료\n",books[n][0]);
+                }
+            }
+            idx=0;
+        } else num[idx++]=input[i];
+    }
 }
-
-
-
-
-
-
-
-
-
-for(int i=0;i<=strlen(input);i++){
-if(input[i]==','||input[i]=='\0'){
-num[idx]='\0';
-n=atoi(num)-1;
-if(n<0||n>=BCOUNT) printf("잘못된 번호: %s\n",num);
-else if(is_borrow){
-if(strcmp(books[n][1],"대출중")==0) printf("이미 대출중: 《%s》\n",books[n][0]);
-
-
-
-
-
-
-
-
-
-else{
-strcpy(books[n][1],"대출중");
-borrow_times[n]=time(NULL);
-printf("《%s》 대출 완료\n",books[n][0]);
-if(n==24) strcpy(member_name,"SNB");
-}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-else{
-if(strcmp(books[n][1],"대출중")!=0) printf("대출중이 아님: 《%s》\n",books[n][0]);
-else{
-strcpy(books[n][1],"대출 가능");
-printf("《%s》 반납 완료\n",books[n][0]);
-}
-}
-idx=0;
-}else num[idx++]=input[i];
-}
-}
-
-
-
-
-
-
 
 void borrow_books(){
-if(member_status==S){printf("회원 상태가 정지되어 대출 불가\n");getchar();return;}
-list_books();
-printf("대출할 책 번호 입력 (여러 권은 ,로 구분): ");
-char input[MAX_INPUT];
-getchar();
-fgets(input,sizeof(input),stdin);
-input[strcspn(input,"\n")]=0;
-process_books(input,1);
-printf("\n엔터를 누르면 메뉴로 돌아갑니다...");
-getchar();
+    if(member_status==S){
+        printf("회원 상태가 정지되어 대출 불가\n");
+        getchar();
+        return;
+    }
+    list_books();
+    printf("대출할 책 번호 입력 (여러 권은 ,로 구분): ");
+    char input[MAX_INPUT];
+    getchar();
+    fgets(input,sizeof(input),stdin);
+    input[strcspn(input,"\n")]=0;
+    process_books(input,1);
+    printf("\n엔터를 누르면 메뉴로 돌아갑니다...");
+    getchar();
 }
-
-
-
-
-
-
 
 void return_books(){
-int has_borrow=0;
-for(int i=0;i<BCOUNT;i++) if(strcmp(books[i][1],"대출중")==0) has_borrow=1;
-if(!has_borrow){printf("대출중인 책 없음\n");getchar();return;}
-list_books();
-printf("반납할 책 번호 입력 (0=전부, 여러 권은 ,로 구분): ");
-char input[MAX_INPUT];
-getchar();
-fgets(input,sizeof(input),stdin);
-input[strcspn(input,"\n")]=0;
-process_books(input,0);
-printf("\n엔터를 누르면 메뉴로 돌아갑니다...");
-getchar();
+    int has_borrow=0;
+    for(int i=0;i<BCOUNT;i++)
+        if(strcmp(books[i][1],"대출중")==0) has_borrow=1;
+    if(!has_borrow){
+        printf("대출중인 책 없음\n");
+        getchar();
+        return;
+    }
+    list_books();
+    printf("반납할 책 번호 입력 (0=전부, 여러 권은 ,로 구분): ");
+    char input[MAX_INPUT];
+    getchar();
+    fgets(input,sizeof(input),stdin);
+    input[strcspn(input,"\n")]=0;
+    process_books(input,0);
+    printf("\n엔터를 누르면 메뉴로 돌아갑니다...");
+    getchar();
 }
-
-
-
-
-
 
 void recommend_books(){
-int cnt=0;
-int used[BCOUNT]={0};
-used[24]=1;
-printf("추천 도서 3권:\n");
-while(cnt<3){
-int i=rand()%BCOUNT;
-if(!used[i]){
-printf("《%s》\n",books[i][0]);
-used[i]=1;
-cnt++;
+    int cnt=0;
+    int used[BCOUNT]={0};
+    used[24]=1;
+    printf("추천 도서 3권:\n");
+    while(cnt<3){
+        int i=rand()%BCOUNT;
+        if(!used[i]){
+            printf("《%s》\n",books[i][0]);
+            used[i]=1;
+            cnt++;
+        }
+    }
 }
+
+
+int count_near_due() {
+    time_t now = time(NULL);
+    int count = 0;
+    for (int i = 0; i < BCOUNT; i++) {
+        if (strcmp(books[i][1], "대출중") == 0) {
+            double elapsed = difftime(now, borrow_times[i]);
+            if (elapsed >= BORROW_TIME_LIMIT - 30 && elapsed < BORROW_TIME_LIMIT) {
+                count++;
+            }
+        }
+    }
+    return count;
 }
-}
-
-
-
-
-
-
-
-
-
 
 int main(){
-srand(time(NULL));
-init_member();
-int c;
+    srand(time(NULL));
+    init_member();
+    int c;
 
+    while(1){
+        printf("\n\n불러오는 중 입니다...\n 잠시만 기다려주세요");
+        Sleep(1000);
+        system("cls");
+        check_warnings();
 
+        int near_due = count_near_due();
 
+        printf("\n1. 대출\n");
+        if (near_due > 0)
+            printf("2. 반납(%d)\n", near_due);
+        else
+            printf("2. 반납\n");
 
-
-
-
-
-
-while(1){
-system("cls");
-check_warnings();
-
-
-
-
-
-
-printf("\n1. 대출\n2. 반납\n3. 책 목록\n4. 추천\n5. 도서증\n6. 종료\n선택: ");
-scanf("%d",&c);
-switch(c){
-case 1: borrow_books(); break;
-case 2: return_books(); break;
-case 3: list_books(); printf("\n엔터를 누르면 메뉴로 돌아갑니다..."); getchar(); getchar(); break;
-case 4: recommend_books(); printf("\n엔터를 누르면 메뉴로 돌아갑니다..."); getchar(); getchar(); break;
-case 5: show_card(); printf("\n엔터를 누르면 메뉴로 돌아갑니다..."); getchar(); getchar(); break;
-case 6: exit(0);
-default: printf("잘못된 선택\n"); getchar();
-}
-}
+        printf("3. 책 목록\n4. 추천\n5. 도서증\n6. 종료\n선택: ");
+        scanf("%d",&c);
+        switch(c){
+            case 1: borrow_books(); break;
+            case 2: return_books(); break;
+            case 3: list_books(); printf("\n엔터를 누르면 메뉴로 돌아갑니다..."); getchar(); getchar(); break;
+            case 4: recommend_books(); printf("\n엔터를 누르면 메뉴로 돌아갑니다..."); getchar(); getchar(); break;
+            case 5: show_card(); printf("\n엔터를 누르면 메뉴로 돌아갑니다..."); getchar(); getchar(); break;
+            case 6: exit(0);
+            default: printf("잘못된 선택\n"); getchar();
+        }
+    }
 }
